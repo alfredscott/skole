@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    basePath: "/skole",
+    basePath: "skole/",
     output: "export",  // <=== enables static exports
     reactStrictMode: true,
 };
