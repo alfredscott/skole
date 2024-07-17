@@ -26,7 +26,8 @@ export default function Assignments() {
       const newAssignment = {
         id: Date.now(), // Unique ID based on timestamp
         title: taskTitle,
-        description: taskDesc
+        description: taskDesc,
+        status: 'todo' // Initial status
       };
       setAssignments([...assignments, newAssignment]);
       setTaskTitle('');
@@ -37,9 +38,24 @@ export default function Assignments() {
     }
   }
 
-  function moveTask(task, place) {
-    // Implement the function to move tasks between columns
+  function moveTask(id, direction) {
+    setAssignments(assignments.map(assignment => {
+      if (assignment.id === id) {
+        if (direction === 'left') {
+          if (assignment.status === 'doing') assignment.status = 'todo';
+          else if (assignment.status === 'done') assignment.status = 'doing';
+        } else if (direction === 'right') {
+          if (assignment.status === 'todo') assignment.status = 'doing';
+          else if (assignment.status === 'doing') assignment.status = 'done';
+        }
+      }
+      return assignment;
+    }));
   }
+
+  const todoAssignments = assignments.filter(assignment => assignment.status === 'todo');
+  const doingAssignments = assignments.filter(assignment => assignment.status === 'doing');
+  const doneAssignments = assignments.filter(assignment => assignment.status === 'done');
 
   return (
     <main>
@@ -78,12 +94,12 @@ export default function Assignments() {
               </div>
             </div>
             <div id="assignmentList" className='mt-[1vw] flex flex-col gap-[1vw] overflow-scroll rounded-lg'>
-              {assignments.map((assignment) => (
+              {todoAssignments.map((assignment) => (
                 <div key={assignment.id} id={`assignment${assignment.id}`} className="text-[1.25vw] font-[500] bg-white rounded-lg p-[0.9vw] shadow-lg flex flex-col justify-between">
                   <div id='titleContainer' className='flex flex-row justify-between items-center'>
-                    <ChevronLeft className='w-[1.5vw] cursor-pointer' />
+                    <ChevronLeft className='w-[1.5vw] cursor-pointer' onClick={() => moveTask(assignment.id, 'left')} />
                     <div id='title'>{assignment.title}</div>
-                    <ChevronRight className='w-[1.5vw] cursor-pointer' />
+                    <ChevronRight className='w-[1.5vw] cursor-pointer' onClick={() => moveTask(assignment.id, 'right')} />
                   </div>
                   <div id='desc' className='font-[400] text-[0.9vw]'>{assignment.description}</div>
                 </div>
@@ -92,9 +108,33 @@ export default function Assignments() {
           </div>
           <div id="doingContainer" className="bg-[#ECEDF1] h-full w-1/3 flex flex-col p-[1vw] rounded-lg shadow-inner">
             <div className="h-[3vw] text-[1.25vw] font-[500] bg-white rounded-lg p-[0.5vw] shadow-lg">Laver:</div>
+            <div id="assignmentList" className='mt-[1vw] flex flex-col gap-[1vw] overflow-scroll rounded-lg'>
+              {doingAssignments.map((assignment) => (
+                <div key={assignment.id} id={`assignment${assignment.id}`} className="text-[1.25vw] font-[500] bg-white rounded-lg p-[0.9vw] shadow-lg flex flex-col justify-between">
+                  <div id='titleContainer' className='flex flex-row justify-between items-center'>
+                    <ChevronLeft className='w-[1.5vw] cursor-pointer' onClick={() => moveTask(assignment.id, 'left')} />
+                    <div id='title'>{assignment.title}</div>
+                    <ChevronRight className='w-[1.5vw] cursor-pointer' onClick={() => moveTask(assignment.id, 'right')} />
+                  </div>
+                  <div id='desc' className='font-[400] text-[0.9vw]'>{assignment.description}</div>
+                </div>
+              ))}
+            </div>
           </div>
           <div id="doneContainer" className="bg-[#ECEDF1] h-full w-1/3 flex flex-col p-[1vw] rounded-lg shadow-inner">
             <div className="h-[3vw] text-[1.25vw] font-[500] bg-white rounded-lg p-[0.5vw] shadow-lg">Har lavet:</div>
+            <div id="assignmentList" className='mt-[1vw] flex flex-col gap-[1vw] overflow-scroll rounded-lg'>
+              {doneAssignments.map((assignment) => (
+                <div key={assignment.id} id={`assignment${assignment.id}`} className="text-[1.25vw] font-[500] bg-white rounded-lg p-[0.9vw] shadow-lg flex flex-col justify-between">
+                  <div id='titleContainer' className='flex flex-row justify-between items-center'>
+                    <ChevronLeft className='w-[1.5vw] cursor-pointer' onClick={() => moveTask(assignment.id, 'left')} />
+                    <div id='title'>{assignment.title}</div>
+                    <ChevronRight className='w-[1.5vw] cursor-pointer' onClick={() => moveTask(assignment.id, 'right')} />
+                  </div>
+                  <div id='desc' className='font-[400] text-[0.9vw]'>{assignment.description}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
